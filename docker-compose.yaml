@@ -1,0 +1,17 @@
+version: 3.9
+
+services:
+  postgres-compose:
+    image: postgres
+    environment:
+      POSTGRES_USER: "BoltComponent"
+      POSTGRES_PASSWORD: "BoltComponent2025!"
+    container_name: BoltComponent
+    restart: always
+    ports:
+      - "17432:5432"
+    networks:
+      - postgres-compose-network
+networks:
+  postgres-compose-network:
+    driver: bridge
