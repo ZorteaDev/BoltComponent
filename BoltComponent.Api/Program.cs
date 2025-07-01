@@ -1,3 +1,4 @@
+using BoltComponent.Domain.Entities;
 using BoltComponent.Domain.Repositories;
 using BoltComponent.Infra;
 using BoltComponent.Infra.Repositories;
@@ -28,19 +29,20 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
+app.MapGet("/components", async (IBaseRepository<Component> repo) => await repo.GetAll() )
+    .WithName("GetComponents")
+    .WithOpenApi();
+
+app.MapPost("/components", async (Component entity, IBaseRepository<Component> repo) => await repo.Create(entity) )
+    .WithName("CreateComponent")
+    .WithOpenApi();
+
+app.MapGet("/components/{id:int}", async (int id, IBaseRepository<Component> repo) => await repo.GetOne(x => x.Id == id) )
+    .WithName("GetComponentById")
+    .WithOpenApi();
+
+app.MapPatch("/components/{id:int}", async (int id, Component entity, IBaseRepository<Component> repo) => await repo.Update(entity) )
+    .WithName("UpdateComponent")
     .WithOpenApi();
 
 app.Run();
